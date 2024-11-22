@@ -96,6 +96,18 @@ def show_pokemon(request, pokemon_id):
             }
         }
         pokemon |= prev_evolution
+    if current_pokemon.evolved_to.all():
+        next_evolution_pokemon = current_pokemon.evolved_to.all().first()
+        next_evolution = {
+            "next_evolution": {
+                "title_ru": next_evolution_pokemon.title_ru,
+                "pokemon_id": next_evolution_pokemon.id,
+                "img_url": request.build_absolute_uri(
+                    next_evolution_pokemon.image.url
+                ),
+            }
+        }
+        pokemon |= next_evolution
     return render(
         request,
         "pokemon.html",
