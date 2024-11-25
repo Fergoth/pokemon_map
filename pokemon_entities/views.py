@@ -4,7 +4,7 @@ from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from .models import Pokemon, PokemonEntity
 from django.utils import timezone
-
+from django.shortcuts import get_object_or_404
 
 MOSCOW_CENTER = [55.751244, 37.618423]
 DEFAULT_IMAGE_URL = (
@@ -63,9 +63,7 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    current_pokemon = Pokemon.objects.filter(id=pokemon_id).first()
-    if current_pokemon is None:
-        return HttpResponseNotFound("<h1>Такой покемон не найден</h1>")
+    current_pokemon = get_object_or_404(Pokemon, id=pokemon_id)
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     pokemon_entities = PokemonEntity.objects.filter(pokemon=current_pokemon)
     for pokemon_entity in pokemon_entities:
@@ -95,8 +93,8 @@ def show_pokemon(request, pokemon_id):
             }
         }
         pokemon |= prev_evolution
-    if current_pokemon.evolved_to.all():
-        next_evolution_pokemon = current_pokemon.evolved_to.all().first()
+    next_evolution_pokemon = current_pokemon.evolved_to.all().first()
+    if next_evolution_pokemon:
         next_evolution = {
             "next_evolution": {
                 "title_ru": next_evolution_pokemon.title_ru,

@@ -25,7 +25,7 @@ class PokemonEntity(models.Model):
     pokemon = models.ForeignKey(
         Pokemon,
         on_delete=models.CASCADE,
-        related_name='pokemon_entities'
+        related_name='entities'
     )
     lat = models.DecimalField('Широта', max_digits=9, decimal_places=6)
     lon = models.DecimalField('Долгота', max_digits=9, decimal_places=6)
@@ -36,3 +36,6 @@ class PokemonEntity(models.Model):
     strength = models.IntegerField('Сила', null=True, blank=True)
     stamina = models.IntegerField('Выносливость', null=True, blank=True)
     defence = models.IntegerField('Защита', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.pokemon.__str__()}  c {self.appeared_at}  по {self.disappeared_at}"
